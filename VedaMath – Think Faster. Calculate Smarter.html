@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>VedaMath – Think Faster. Calculate Smarter.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f5f6fc;--card:#fff;--tx:#1b1b3a;--mut:#62648a;--pri:#4f46e5;--pri2:#7c3aed;--ok:#16a34a;--bad:#dc2626;--bd:#e3e4f3;--sh:0 4px 18px rgba(60,50,150,.09);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12122a;--card:#1c1c3c;--tx:#eceeff;--mut:#a2a4cc;--bd:#2d2d56;--pri:#8b83ff;--sh:0 4px 18px rgba(0,0,0,.4)}}
+:root[data-theme=dark]{--bg:#12122a;--card:#1c1c3c;--tx:#eceeff;--mut:#a2a4cc;--bd:#2d2d56;--pri:#8b83ff;--sh:0 4px 18px rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit;text-decoration:none}h1,h2,h3{line-height:1.2;margin:.2em 0 .4em}h1{font-size:clamp(2rem,6vw,3.4rem)}
+.wrap{max-width:1050px;margin:0 auto;padding:0 18px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--card);border-bottom:1px solid var(--bd)}
+nav .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.3rem;color:var(--pri)}.links{display:flex;gap:4px;margin-left:12px;flex:1}
+.links a{padding:8px 12px;border-radius:10px;color:var(--mut);font-weight:600}.links a.on,.links a:hover{background:var(--bg);color:var(--pri)}
+.stats{display:flex;gap:10px;align-items:center;font-weight:700}.burger{display:none;margin-left:auto}
+@media(max-width:760px){.burger{display:block}.links{display:none;width:100%;flex-direction:column;margin:0 0 10px}.links.open{display:flex}.stats{margin-left:auto}.burger{margin-left:0}}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--pri2);outline-offset:2px}
+.btn{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:0;border-radius:12px;padding:13px 22px;font:700 1rem inherit;cursor:pointer;transition:transform .15s,box-shadow .15s;min-height:46px;display:inline-block;text-align:center}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--sh)}.btn.ghost{background:var(--card);color:var(--pri);border:2px solid var(--pri)}.btn.sm{padding:7px 14px;min-height:36px}
+.card{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:22px;border:1px solid var(--bd)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.pill{background:var(--bg);border-radius:99px;padding:3px 12px;font-size:.85rem;font-weight:700;color:var(--mut)}
+.hero{padding:50px 0 30px;display:grid;gap:30px;grid-template-columns:1.1fr .9fr;align-items:center}@media(max-width:760px){.hero{grid-template-columns:1fr}}
+.grad{background:linear-gradient(135deg,var(--pri),var(--pri2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.mut{color:var(--mut)}section.s{margin:44px 0}.bar{height:10px;background:var(--bg);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--pri2));border-radius:9px;transition:width .6s}
+.step{opacity:0;transform:translateY(8px);transition:.5s;font:600 1.15rem ui-monospace,monospace;padding:6px 0}.step.in{opacity:1;transform:none}
+.big{font:800 clamp(2.4rem,9vw,4rem) ui-monospace,monospace;text-align:center;margin:18px 0}.noselect{user-select:none;-webkit-user-select:none}
+input#ans{font:700 1.6rem ui-monospace,monospace;padding:12px;border-radius:12px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);flex:1;min-width:140px;text-align:center}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.chip{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:8px 16px;font-weight:600;cursor:pointer;min-height:40px}
+.chip[aria-pressed=true]{background:var(--pri);border-color:var(--pri);color:#fff}.num{font-size:2rem;font-weight:800}.q{max-width:640px;margin:30px auto}
+.badge{font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:99px;background:#e0e7ff;color:#3730a3}.lock{opacity:.35;filter:grayscale(1)}
+footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--bd);text-align:center;color:var(--mut)}footer a{margin:0 8px;font-weight:600}
+.pop{animation:pop .5s}@keyframes pop{50%{transform:scale(1.12)}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== v2: living night-sky background, theme toggle, shortcut panel ===== */
+:root{--card:rgba(255,255,255,.86);--bgimg:radial-gradient(900px 520px at 12% -8%,#d8d2ff 0,transparent 60%),radial-gradient(800px 520px at 100% 8%,#ffd6ee 0,transparent 55%),linear-gradient(180deg,#f3f2ff,#e6eaff)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1b1850;--card:rgba(24,22,64,.74);--tx:#eceeff;--mut:#b0b2dc;--bd:#38357a;--pri:#9a93ff;--sh:0 6px 26px rgba(0,0,0,.45);--bgimg:radial-gradient(900px 600px at 18% -5%,#34207d 0,transparent 62%),radial-gradient(700px 520px at 95% 15%,#0e3b78 0,transparent 60%),linear-gradient(180deg,#070618,#100b2e 55%,#070618)}}
+:root[data-theme=dark]{--bg:#1b1850;--card:rgba(24,22,64,.74);--tx:#eceeff;--mut:#b0b2dc;--bd:#38357a;--pri:#9a93ff;--sh:0 6px 26px rgba(0,0,0,.45);--bgimg:radial-gradient(900px 600px at 18% -5%,#34207d 0,transparent 62%),radial-gradient(700px 520px at 95% 15%,#0e3b78 0,transparent 60%),linear-gradient(180deg,#070618,#100b2e 55%,#070618)}
+body{background:var(--bgimg);background-attachment:fixed;min-height:100vh}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
+nav{background:var(--card);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.card{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:transform .2s,box-shadow .2s,border-color .2s}
+a.card:hover,.grid>.card:hover{transform:translateY(-3px);border-color:var(--pri2)}
+.grad{background-image:linear-gradient(90deg,var(--pri),#ec4899,var(--pri2),var(--pri));background-size:300% auto;animation:shine 7s linear infinite}
+@keyframes shine{to{background-position:300% center}}
+.hero>.card{animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.big{text-shadow:0 0 26px rgba(124,58,237,.4)}
+.btn{position:relative;overflow:hidden}
+.btn:not(.ghost)::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);transform:translateX(-120%);animation:sweep 4s ease-in-out infinite}
+@keyframes sweep{60%,100%{transform:translateX(120%)}}
+.miss{margin-top:14px;border-radius:16px;padding:16px;border:2px solid var(--bad);background:linear-gradient(135deg,rgba(220,38,38,.12),rgba(124,58,237,.12));text-align:left;animation:slide .4s}
+.miss .ans{font-size:1.3rem;margin:6px 0 10px}
+.short{padding:12px 14px;border-radius:12px;background:var(--bg);border-left:5px solid var(--pri2)}
+.short .sh{font-weight:800;color:var(--pri);font-size:1.05rem}
+.short .tip{margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--card)}
+.short .step{font-size:1.05rem}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+@keyframes slide{from{opacity:0;transform:translateY(12px)}}
+.burst{position:relative;height:0}.burst span{position:absolute;left:50%;top:0;font-size:1.4rem;animation:fly .9s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}
+@media(prefers-reduced-motion:reduce){#sky{opacity:.8}}
+.toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 72px);left:50%;transform:translateX(-50%);z-index:50;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:10px 18px;border-radius:99px;font-weight:800;box-shadow:var(--sh);animation:fade .3s;pointer-events:none;max-width:92vw;text-align:center}
+@keyframes fade{from{opacity:0}}
+details.card summary{cursor:pointer;list-style:none}details.card[open]{border-color:var(--pri2)}details.card .tip{margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--bg)}
+.trick{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-left:6px solid var(--pri2)}
+</style></head><body>
+<nav><div class="wrap"><a class="logo" href="#home" id="brand">∑ VedaMath</a>
+<button class="chip burger" id="bg" aria-label="Menu" aria-expanded="false">☰</button>
+<div class="links" id="links"><a href="#home">Home</a><a href="#learn">Learn</a><a href="#practice">Practice</a><a href="#challenges">Challenges</a><a href="#progress">Progress</a><a href="#cheats">Cheat Sheet</a><a href="#about">About</a></div>
+<div class="stats"><span id="xp"></span><span id="st"></span><button class="chip" id="mu" aria-label="Toggle sound">🔊</button><button class="chip" id="th" aria-label="Toggle light or dark theme">🌙</button><a href="#progress" aria-label="Profile">👤</a></div></div></nav>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap"><b id="fname">VedaMath</b><div id="ftag">Think Faster. Calculate Smarter.</div><p><a href="#learn">Learn</a><a href="#practice">Practice</a><a href="#challenges">Challenges</a><a href="#progress">Progress</a><a href="#about">About</a></p><p><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#contact">Contact</a></p>© 2026 <span id="fc">VedaMath</span></div></footer>
+<script>
+const BRAND={name:'VedaMath',tag:'Think Faster. Calculate Smarter.'}; // change here
+const $=s=>document.querySelector(s),E=h=>{$('#app').innerHTML=h};
+/* ---------- progress store (localStorage, shape ready for a DB) ---------- */
+const blank=()=>({xp:0,solved:0,correct:0,best:null,streak:0,longest:0,last:'',days:[],done:{},skill:{},bestScore:{},perfect:false,dailyDone:''});
+let S=blank();try{S=Object.assign(blank(),JSON.parse(localStorage.getItem('vm_v1')))}catch(e){}
+const save=()=>{try{localStorage.setItem('vm_v1',JSON.stringify(S))}catch(e){}};
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>ymd(new Date());
+function touch(){const t=today();if(S.last===t)return;const y=new Date();y.setDate(y.getDate()-1);S.streak=S.last===ymd(y)?S.streak+1:1;if(S.streak%7===0)S.xp+=200;S.longest=Math.max(S.longest,S.streak);S.last=t;S.days.push(t)}
+const LV=[[0,'Beginner'],[100,'Learner'],[300,'Calculator Challenger'],[600,'Mental Math Explorer'],[1000,'Speed Solver'],[1500,'Math Master']];
+const lvl=()=>{let i=0;LV.forEach((l,k)=>{if(S.xp>=l[0])i=k});return i};
+/* ---------- question engine (add a generator to G + CAT to extend) ---------- */
+let R=Math.random;const ri=(a,b)=>a+Math.floor(R()*(b-a+1)),p2=n=>String(n).padStart(2,'0');
+function seeded(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}let a=h>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const mk=(c,q,a,hint,steps)=>({question:q,correctAnswer:a,category:c,hint,steps,explanation:steps.join(' → ')});
+const G={
+comp10:d=>{const n=ri(1,9);return mk('comp10',`10 − ${n}`,10-n,'What do you add to '+n+' to reach 10?',[`${n} + ? = 10`,`? = ${10-n}`])},
+comp100:d=>{const n=ri(1,99);return mk('comp100',`100 − ${n}`,100-n,'Make each digit sum to 9, the last digit to 10.',[`Tens: 9 − ${Math.floor(n/10)} = ${9-Math.floor(n/10)}`,`Units: 10 − ${n%10} = ${10-n%10}`,`Answer: ${100-n}`])},
+add:d=>{const m=d<3?2:d<5?3:4,lo=10**(m-1),a=ri(lo,lo*10-1),b=ri(lo,lo*10-1),bu=b%10;return mk('add',`${a} + ${b}`,a+b,'Add the big parts of the second number first, then the units.',[`Split: ${b} = ${b-bu} + ${bu}`,`${a} + ${b-bu} = ${a+b-bu}`,`${a+b-bu} + ${bu} = ${a+b}`])},
+sub:d=>{const m=d<3?2:d<5?3:4,lo=10**(m-1),a=ri(lo*2,lo*10-1),b=ri(lo,a-1),bu=b%10;return mk('sub',`${a} − ${b}`,a-b,'Subtract the round part first, then the units.',[`Split: ${b} = ${b-bu} + ${bu}`,`${a} − ${b-bu} = ${a-b+bu}`,`${a-b+bu} − ${bu} = ${a-b}`])},
+mul5:d=>{const n=ri(12,d<3?99:d<5?499:2999);return mk('mul5',`${n} × 5`,n*5,'×5 is ×10 then halve.',[`${n} × 10 = ${n*10}`,`Half of ${n*10} = ${n*5}`])},
+mul11:d=>{const n=d<3?ri(12,98):ri(101,999),s=String(n);let st;if(n<100){const a=+s[0],b=+s[1];st=[`Keep the outer digits: ${a} _ ${b}`,`Add them: ${a}+${b} = ${a+b}`,`Place in the middle (carry if 10+): ${n*11}`]}else st=[`${n} × 11 = ${n} × 10 + ${n}`,`${n*10} + ${n} = ${n*11}`];return mk('mul11',`${n} × 11`,n*11,'Keep the outer digits; the middle is the sum of neighbours.',st)},
+mul25:d=>{const n=ri(12,d<3?99:d<5?399:1999);return mk('mul25',`${n} × 25`,n*25,'×25 is ×100 then ÷4.',[`${n} × 100 = ${n*100}`,`${n*100} ÷ 4 = ${n*25}`])},
+mul50:d=>{const n=ri(12,d<3?99:d<5?399:1999);return mk('mul50',`${n} × 50`,n*50,'×50 is ×100 then ÷2.',[`${n} × 100 = ${n*100}`,`${n*100} ÷ 2 = ${n*50}`])},
+near100:d=>{const x=ri(1,[4,7,9,9,9][d-1]),y=ri(1,[4,7,9,9,9][d-1]),a=100-x,b=100-y;return mk('near100',`${a} × ${b}`,a*b,'Think about how far both numbers are from 100.',[`${a} = 100 − ${x}, ${b} = 100 − ${y}`,`Cross-subtract: ${a} − ${y} = ${a-y}`,`Multiply the gaps: ${x} × ${y} = ${x*y}`,`Join: ${a-y} | ${p2(x*y)} = ${a*b}`])},
+sq5:d=>{const k=ri(1,d<3?9:d<5?19:29),n=10*k+5;return mk('sq5',`${n}²`,n*n,'Multiply the leading digits by the next number, then attach 25.',[`Leading part: ${k}`,`${k} × ${k+1} = ${k*(k+1)}`,`Attach 25: ${k*(k+1)}25 = ${n*n}`])},
+sqnear100:d=>{const n=d<4?ri(91,99):ri(101,109),x=Math.abs(100-n);return mk('sqnear100',`${n}²`,n*n,'Use the distance from 100: n ± gap, then gap².',[`Gap from 100: ${x}`,`${n} ${n<100?'−':'+'} ${x} = ${2*n-100}`,`Gap squared: ${x}² = ${p2(x*x)}`,`Join: ${2*n-100} | ${p2(x*x)} = ${n*n}`])},
+div:d=>{const m=d<3?[3,9][ri(0,1)]:[3,9,11][ri(0,2)],n=ri(100,d<3?999:9999),ds=[...String(n)].map(Number);let a,st;if(m===11){const alt=ds.reduceRight((s,v,i)=>s+(((ds.length-1-i)%2)?-v:v),0);a=((alt%11)+11)%11;st=[`Alternating digit sum (from the right): ${alt}`,`${alt} mod 11 = ${a}`]}else{const sum=ds.reduce((x,y)=>x+y,0);a=sum%m;st=[`Digit sum: ${ds.join(' + ')} = ${sum}`,`${sum} mod ${m} = ${a}`]}return mk('div',`Remainder of ${n} ÷ ${m}`,a,m===11?'Alternate + and − across the digits.':'Add the digits, then find the remainder of that sum.',st)},
+div5:d=>{const n=5*ri(4,d<3?40:200);return mk('div5',`${n} ÷ 5`,n/5,'÷5 is ×2 then ÷10.',[`${n} × 2 = ${n*2}`,`${n*2} ÷ 10 = ${n/5}`])},
+pct:d=>{const p=[10,20,25,50,5,15][ri(0,d<3?3:5)],b=ri(2,d<3?10:40)*20;return mk('pct',`${p}% of ${b}`,p*b/100,'Find 1% (or 10%) first, then scale.',[`1% of ${b} = ${b/100}`,`${p} × ${b/100} = ${p*b/100}`])},
+frac:d=>{const dn=[2,4,5,8,10][ri(0,d<3?2:4)],nu=ri(1,dn-1),b=dn*ri(2,d<3?12:30);return mk('frac',`${nu}/${dn} of ${b}`,nu*b/dn,'Divide by the bottom, then multiply by the top.',[`${b} ÷ ${dn} = ${b/dn}`,`${b/dn} × ${nu} = ${nu*b/dn}`])}};
+const GRP={comp10:'addition',comp100:'addition',add:'addition',sub:'subtraction',mul5:'multiplication',mul11:'multiplication',mul25:'multiplication',mul50:'multiplication',near100:'multiplication',sq5:'squares',sqnear100:'squares',div:'division',div5:'division',pct:'percentages',frac:'percentages'};
+const TOPICS={Addition:['add','comp10','comp100'],Subtraction:['sub','comp100'],Multiplication:['mul5','mul11','mul25','mul50','near100'],Division:['div','div5'],Squares:['sq5','sqnear100'],Percentages:['pct','frac'],Mixed:Object.keys(G)};
+const DN=['beginner','easy','medium','hard','master'];
+function genSet(cats,d,n){const out=[],seen=new Set();for(let k=0;out.length<n&&k<n*30;k++){const q=G[cats[ri(0,cats.length-1)]](d);if(seen.has(q.question))continue;seen.add(q.question);q.difficulty=DN[d-1];out.push(q)}return out}
+/* ---------- lessons ---------- */
+const LN=['','Foundations','Multiplication','Squares & Cubes','Division','Advanced'];
+const LS=[['comp10','Complements to 10',1,1,3,'A complement is the number that tops another up to a round base. 7 and 3 are complements to 10.','Round numbers are easy to work with. Spotting complements lets you regroup: 7 + 5 = 7 + 3 + 2 = 12.'],
+['comp100','Complements to 100',1,1,4,'Find what must be added to reach 100: subtract each digit from 9, and the last digit from 10.','100 − n = 99 − n + 1. Subtracting from 99 never needs borrowing, then the +1 fixes the last digit.'],
+['add','Fast Addition',1,2,5,'Add left-to-right in chunks instead of column by column.','Place value lets you split a number: a + 346 = a + 300 + 40 + 6. Partial sums stay small and easy.'],
+['sub','Fast Subtraction',1,2,5,'Subtract the round part of the number first, then adjust with the units.','a − 47 = a − 50 + 3, or a − 40 − 7. Round numbers avoid borrowing.'],
+['mul5','Multiplication by 5',2,1,3,'To multiply by 5, multiply by 10 and halve the result.','5 = 10 ÷ 2, so n × 5 = n × 10 ÷ 2.'],
+['mul11','Multiplication by 11',2,2,5,'For a two-digit number, keep the outer digits and put their sum in the middle.','n × 11 = n × 10 + n. Adding a number to its shifted copy places neighbouring digit sums in the middle.'],
+['mul25','Multiplication by 25',2,2,4,'To multiply by 25, multiply by 100 then divide by 4.','25 = 100 ÷ 4, so n × 25 = n × 100 ÷ 4.'],
+['mul50','Multiplication by 50',2,1,3,'To multiply by 50, multiply by 100 then halve.','50 = 100 ÷ 2, so n × 50 = n × 100 ÷ 2.'],
+['near100','Numbers Near 100',2,3,8,'When both numbers are slightly below 100, use how far each is from 100.','(100−x)(100−y) = 100(100−x−y) + xy. Note 100−x−y equals a−y, which is the cross-subtraction.'],
+['sq5','Squares Ending in 5',3,2,5,'Multiply the leading digits by the next whole number, then write 25 after it.','(10k+5)² = 100k(k+1) + 25. The k(k+1) shifts two places and 25 fills the end.'],
+['sqnear100','Squares Near 100',3,3,7,'Use the distance x from 100: write (n ± x) then x² as a two-digit block.','(100−x)² = 100(100−2x) + x². And 100 − 2x equals n − x for numbers below 100.'],
+['div','Divisibility & Remainders',4,3,8,'A number and its digit sum leave the same remainder when divided by 3 or 9. For 11, alternate + and − across the digits.','Every power of 10 is one more than a multiple of 9, so n ≡ digit sum (mod 9). For 11, powers of 10 alternate between +1 and −1.'],
+['pct','Fast Percentages',5,2,6,'Find 1% or 10% by moving the decimal point, then build up to the percentage.','p% of n = p × (n ÷ 100). 10%, 5% and 1% are quick building blocks.'],
+['frac','Fast Fractions',5,3,6,'To find a/b of a number, divide by the bottom (b) then multiply by the top (a).','a/b × n = (n ÷ b) × a. Dividing first keeps numbers small.']].map(l=>({id:l[0],t:l[1],lv:l[2],d:l[3],time:l[4],intro:l[5],why:l[6],xp:50}));
+/* ---------- helpers ---------- */
+const bar=p=>`<div class="bar" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%"></i></div>`;
+const diff=d=>`<span class="badge">${['','Beginner','Easy','Medium','Hard','Master'][d]}</span>`;
+function animate(el,steps,gap=850){if(!el)return;el.innerHTML=steps.map(s=>`<div class="step">${s}</div>`).join('');[...el.children].forEach((c,i)=>setTimeout(()=>c.classList.add('in'),250+i*gap))}
+let ACTIVE=null,LASTL=lvl(),MUTE=false,AC_;try{MUTE=localStorage.getItem('vm_mute')==='1'}catch(e){}
+function beep(f,d,t='sine',v=.08,delay=0){if(MUTE)return;try{AC_=AC_||new(window.AudioContext||window.webkitAudioContext)();const o=AC_.createOscillator(),g=AC_.createGain(),s=AC_.currentTime+delay;o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(AC_.destination);o.start(s);o.stop(s+d)}catch(e){}}
+const sfx={ok:()=>{beep(660,.12);beep(880,.18,'sine',.08,.1)},bad:()=>beep(180,.3,'sawtooth',.05),win:()=>[523,659,784,1047].forEach((f,i)=>beep(f,.22,'triangle',.08,i*.12))};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function cheatPage(){E(`<h1>⚡ Cheat Sheet</h1><p class="mut">Every shortcut in one place with a worked example. Tap a card to open it.</p><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">${LS.map(l=>{R=seeded('cs'+l.id);const q=G[l.id](2);R=Math.random;return`<details class="card"><summary><b>${l.t}</b> ${diff(l.d)}</summary><p>${l.intro}</p><div class="tip"><b>${q.question} = ${q.correctAnswer}</b></div>${q.steps.map(s=>`<div class="step in">${s}</div>`).join('')}<p><a class="btn sm" href="#lesson/${l.id}">Open lesson</a></p></details>`}).join('')}</div>`)}
+function miss(q,v,lesson){const L=LS.find(l=>l.id===q.category);return`<div class="miss"><div class="bad">✗ Not quite. You answered <b>${v}</b></div><div class="ans">Correct answer: <b class="ok">${q.correctAnswer}</b></div><div class="short"><div class="sh">⚡ Shortcut${L?': '+L.t:''}</div><p style="margin:6px 0">${L?L.intro:q.hint}</p><div class="tip">💡 ${q.hint}</div><div id="wst"></div>${L?`<p class="mut" style="margin:8px 0 0"><b>Why it works:</b> ${L.why}</p>`:''}</div>${lesson?'<p><button class="btn ghost sm" id="rt">Try this question again</button></p>':''}</div>`}
+function fx(ok){ok?sfx.ok():sfx.bad();const inp=$('#ans');if(!ok&&inp){inp.classList.remove('shake');void inp.offsetWidth;inp.classList.add('shake')}if(ok){const b=document.createElement('div');b.className='burst';b.innerHTML=Array.from({length:14},()=>`<span style="--dx:${Math.round((Math.random()-.5)*260)}px;--dy:${Math.round(-30-Math.random()*130)}px">${['✨','⭐','🎉','💫'][Math.floor(Math.random()*4)]}</span>`).join('');$('#fb').prepend(b)}}
+function lessonCard(l){const dn=S.done[l.id];return`<div class="card"><div class="row"><b>${l.t}</b></div><div class="row">${diff(l.d)}<span class="pill">⏱ ${l.time} min</span><span class="pill">+${l.xp} XP</span></div><div class="mut">${dn!=null?'Completion 100%':'Completion 0%'}</div>${bar(dn!=null?100:0)}<p><a class="btn sm" href="#lesson/${l.id}">${dn!=null?'Review Lesson':'Start Lesson'}</a></p></div>`}
+const nextLesson=()=>LS.find(l=>S.done[l.id]==null)||LS[0];
+/* ---------- session engine (lessons, practice, challenges) ---------- */
+function session(o){
+ const qs=o.qs,n=qs.length;let i=0,res=[],streak=0,bs=0,qt,tid,ended=false,tries=0,left=o.time,el=0,wrongNow=false,lives=o.lives||0;
+ const tick=()=>{const t=$('#tm');if(o.time){left--;if(t)t.textContent='⏱ '+left+'s';if(left<=0)finish()}else{el++;if(t)t.textContent='⏱ '+el+'s'}};
+ function show(){qt=Date.now();tries=0;const q=qs[i];
+  E(`<section class="card q"><div class="row"><b>${o.title||'Practice'}</b><span class="pill">Question ${i+1} / ${o.lives?'∞':n}</span>${o.lives?'<span class="pill" aria-label="Lives">'+'❤️'.repeat(lives)+'🖤'.repeat(o.lives-lives)+'</span>':''}<span class="pill" id="tm">${o.time?'⏱ '+left+'s':'⏱ '+el+'s'}</span></div>${bar(i/n*100)}<div class="big noselect" oncopy="return false">${q.question}</div><div class="row"><input id="ans" inputmode="decimal" autocomplete="off" aria-label="Your answer" placeholder="Answer"><button class="btn" id="ok">Check Answer</button></div><div id="fb" aria-live="polite" class="noselect"></div>${o.lesson?'<div class="row"><button class="btn ghost sm" id="hint">Show Hint</button><button class="btn ghost sm" id="sol">Show Solution</button></div>':''}<div class="row"><button class="chip" id="quit">Quit</button></div></section>`);
+  const inp=$('#ans');inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#nx')?next():check()}};
+  $('#ok').onclick=check;$('#quit').onclick=()=>{clearInterval(tid);ended=true;location.hash=o.back||'#learn'};
+  if(o.lesson){$('#hint').onclick=()=>$('#fb').innerHTML=`<p>💡 ${q.hint}</p>`;$('#sol').onclick=()=>{if(!res[i])rec(false,(Date.now()-qt)/1000);$('#fb').innerHTML=`<p><b>${q.correctAnswer}</b></p><p class="mut">${q.steps.join('<br>')}</p>`+nx()}}}
+ const nx=()=>{setTimeout(()=>{const b=$('#nxb');if(b)b.onclick=next},0);return'<p id="nx"><button class="btn" id="nxb">Next →</button></p>'};
+ function rec(ok,t){res[i]={q:qs[i],ok,t};S.solved++;const g=GRP[qs[i].category],k=S.skill[g]||(S.skill[g]={n:0,c:0});k.n++;touch();
+  if(ok){S.correct++;k.c++;streak++;S.xp+=10+Math.min(streak-1,10);if(streak>=3)toast('🔥 Combo x'+streak+' · +'+Math.min(streak-1,10)+' bonus XP');bs=Math.max(bs,streak);if(S.best==null||t<S.best)S.best=+t.toFixed(1)}else streak=0;save();hdr()}
+ function check(){if(ended)return;const q=qs[i],v=parseFloat($('#ans').value.replace(/,/g,''));if(isNaN(v)||$('#nx'))return;const ok=Math.abs(v-q.correctAnswer)<1e-9,t=(Date.now()-qt)/1000;
+  if(!res[i])rec(ok,t);
+  if(ok){fx(true);$('#fb').insertAdjacentHTML('beforeend','<p class="ok pop">🎉 Correct!</p>');$('#ok').disabled=true;if(o.lesson)$('#fb').insertAdjacentHTML('beforeend',nx());else setTimeout(next,550)}
+  else{fx(false);if(o.lives)lives--;$('#fb').innerHTML=(o.lives?'<p class="bad">💔 '+lives+' '+(lives===1?'life':'lives')+' left</p>':'')+miss(q,v,o.lesson)+nx();animate($('#wst'),q.steps,650);if(!o.lesson)$('#ok').disabled=true;const rt=$('#rt');if(rt)rt.onclick=()=>{$('#fb').innerHTML='';const a=$('#ans');a.value='';a.focus()}}}
+ function next(){if(ended)return;i++;(i<n&&!(o.lives&&lives<=0))?show():finish()}
+ function finish(){if(ended)return;ended=true;clearInterval(tid);const r=res.filter(Boolean),c=r.filter(x=>x.ok).length,tot=r.length||1;
+  const out={n:r.length,total:n,c,acc:Math.round(c/tot*100),avg:r.length?+(r.reduce((s,x)=>s+x.t,0)/r.length).toFixed(1):0,bs,xp:c*10,wrong:r.filter(x=>!x.ok).map(x=>x.q),dots:r};
+  if(out.n>=5&&c===out.n)S.perfect=true;save();o.onEnd(out)}
+ tid=setInterval(tick,1000);ACTIVE=()=>{ended=true;clearInterval(tid)};show()}
+function results(r,o){sfx.win();const lbl=(a,b)=>`<div class="card"><div class="mut">${a}</div><div class="num">${b}</div></div>`;
+ E(`<h1 class="grad">Challenge Complete! 🎉</h1><div class="grid">${lbl('Score',r.xp+' XP')}${lbl('Correct',r.c+' / '+r.n)}${lbl('Accuracy',r.acc+'%')}${lbl('Average Time',r.avg+' sec')}${lbl('Best Streak',r.bs)}</div><div class="card" style="margin-top:16px"><b>Performance</b><div class="row">${r.dots.map((x,i)=>`<span title="Q${i+1}" style="width:22px;height:22px;border-radius:7px;background:${x.ok?'var(--ok)':'var(--bad)'}"></span>`).join('')}</div></div><div class="row"><button class="btn" id="a1">Try Again</button>${r.wrong.length?'<button class="btn ghost" id="a2">Practice Mistakes</button>':''}<a class="btn ghost" href="#progress">Back to Dashboard</a><button class="btn ghost" id="a3">📤 Share Score</button></div>`);
+ $('#a1').onclick=o.again;$('#a3').onclick=()=>{const t='I scored '+r.c+'/'+r.n+' ('+r.acc+'% accuracy, best streak '+r.bs+') on VedaMath. Can you beat me? '+location.href;const ok=()=>toast('Score copied. Paste it to challenge a friend!');try{navigator.share?navigator.share({text:t}).catch(()=>{}):navigator.clipboard.writeText(t).then(ok,()=>toast(t))}catch(e){toast(t)}};if($('#a2'))$('#a2').onclick=()=>{R=Math.random;session({qs:r.wrong.map(q=>({...q})).sort(()=>R()-.5),lesson:true,title:'Practice Mistakes',back:'#progress',onEnd:r2=>results(r2,o)})}}
+/* ---------- pages ---------- */
+const P={topic:'Mixed',d:2,n:10,t:0};
+function startChallenge(c){let rr=Math.random;if(c.daily)rr=seeded('vm'+today());R=rr;const qs=c.lives?[1,2,3,4,5].flatMap(d=>genSet(TOPICS.Mixed,d,d<3?5:8)):genSet(TOPICS.Mixed,c.d,c.n);R=Math.random;
+ session({qs,time:c.time,lives:c.lives,title:c.name,back:'#challenges',onEnd:r=>{if(c.daily&&S.dailyDone!==today()){S.dailyDone=today();S.xp+=75;r.xp+=75}const k=c.daily?'daily'+today():c.id;S.bestScore[k]=Math.max(S.bestScore[k]||0,r.xp);save();hdr();results(r,{again:()=>startChallenge(c)})}})}
+const CH=[{id:'quick',name:'Quick Challenge',n:10,time:60,d:2},{id:'speed',name:'Speed Challenge',n:20,time:90,d:3},{id:'acc',name:'Accuracy Challenge',n:10,time:0,d:3},{id:'master',name:'Master Challenge',n:50,time:300,d:5},{id:'surv',name:'Survival Mode ❤️❤️❤️',n:35,time:0,d:3,lives:3}];
+const DAILY=()=>({id:'daily',name:'Daily Challenge',n:10,time:60,d:3,daily:true});
+function lessonPage(id){const l=LS.find(x=>x.id===id);if(!l)return location.hash='#learn';let step=0;
+ const nav=()=>`<div class="row">${['Learn','Example','Try & Practice'].map((s,k)=>`<span class="pill" style="${k===step?'background:var(--pri);color:#fff':''}">${k+1}. ${s}</span>`).join('')}</div>`;
+ function render(){
+  if(step===0){E(`<section class="card q" style="max-width:720px">${nav()}<h2>${l.t}</h2>${diff(l.d)}<h3>What is this technique?</h3><p>${l.intro}</p><h3>Why it works</h3><p>${l.why}</p><button class="btn" id="go">See an Example →</button></section>`)}
+  else if(step===1){R=seeded('ex'+l.id);const q=G[l.id](2);R=Math.random;E(`<section class="card q" style="max-width:720px">${nav()}<h3>Calculate</h3><div class="big">${q.question}</div><div id="st"></div><div class="row"><button class="btn" id="go">Try It Yourself →</button><button class="btn ghost" id="rp">Replay</button></div></section>`);const run=()=>animate($('#st'),q.steps);run();$('#rp').onclick=run}
+  else{R=Math.random;session({qs:genSet([l.id],Math.min(l.d+1,5),5),lesson:true,title:l.t,back:'#learn',onEnd:r=>{const first=S.done[l.id]==null;let bonus=0;if(first){bonus=50+(r.acc===100?100:0);S.xp+=bonus}S.done[l.id]=Math.max(S.done[l.id]||0,r.acc);touch();save();hdr();const nl=nextLesson();
+   E(`<section class="card q" style="text-align:center"><h1>🎉 Lesson Complete!</h1><p class="num">Accuracy: ${r.acc}%</p><p>Average Time: ${r.avg} sec</p><p class="num grad pop">XP Earned: +${r.xp+bonus} XP</p>${r.acc===100&&first?'<p>💯 Perfect lesson bonus!</p>':''}<div class="row" style="justify-content:center"><a class="btn" href="#lesson/${nl.id}">Continue Learning</a><a class="btn ghost" href="#practice">Practice More</a></div></section>`)}});return}
+  $('#go').onclick=()=>{step++;render()}}
+ render()}
+function homePage(){const hs=['98 = 100 − 2','97 = 100 − 3','Cross-subtract: 98 − 3 = 95','Multiply gaps: 2 × 3 = 06','Answer: 95 | 06 = <b>9506</b>'];
+ E(`<div class="hero"><div><span class="pill">${BRAND.tag}</span><h1>Master <span class="grad">Mental Mathematics.</span></h1><p class="mut">Learn powerful calculation techniques and solve difficult problems faster — without relying on a calculator.</p><div class="row"><a class="btn" href="#lesson/${nextLesson().id}">Start Learning</a><a class="btn ghost" href="#challenges">Take a Challenge</a></div></div><div class="card"><div class="big" style="margin:4px 0">98 × 97</div><div id="hs"></div></div></div>
+ <section class="s">${(()=>{const td=LS[Math.floor(seeded('td'+today())()*LS.length)];return`<div class="card trick"><div style="flex:1;min-width:230px"><span class="pill">✨ Trick of the Day</span><h2>${td.t}</h2><p class="mut">${td.intro}</p></div><a class="btn" href="#lesson/${td.id}">Learn it now</a></div>`})()}</section>
+ <section class="s"><h2>Why VedaMath?</h2><div class="grid">${[['⚡','Think Faster','Improve mental calculation speed.'],['🧠','Calculate Smarter','Learn efficient mathematical techniques.'],['💪','Build Confidence','Solve difficult calculations without a calculator.'],['📈','Track Progress','See your speed and accuracy improve.']].map(c=>`<div class="card"><div class="num">${c[0]}</div><b>${c[1]}</b><p class="mut">${c[2]}</p></div>`).join('')}</div></section>
+ <section class="s"><h2>Learning Roadmap</h2><div class="grid">${['Foundation','Addition & Subtraction','Multiplication','Squares','Division','Percentages','Advanced','Master'].map((s,i)=>`<a class="card" href="#learn"><span class="pill">${i+1}</span> <b>${s}</b></a>`).join('')}</div></section>
+ <section class="s"><h2>Popular Techniques</h2><div class="grid">${['mul11','sq5','near100','sqnear100','add','pct'].map(id=>lessonCard(LS.find(l=>l.id===id))).join('')}</div></section>
+ <section class="s"><div class="card" style="background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff"><h2>🔥 Daily Mental Math Challenge</h2><p>10 Questions · 60 Seconds · No Calculator</p><button class="btn ghost" id="dc">Start Challenge</button></div></section>
+ <section class="s"><div class="grid">${[['50+','Techniques'],['1,000+','Practice Questions'],['5','Difficulty Levels'],['∞','Ways to Improve']].map(c=>`<div class="card"><div class="num grad">${c[0]}</div>${c[1]}</div>`).join('')}</div></section>`);
+ animate($('#hs'),hs);$('#dc').onclick=()=>startChallenge(DAILY())}
+function learnPage(){E(`<h1>Learn</h1><p class="mut">Pick a technique. Each lesson: learn → example → practice.</p>`+[1,2,3,4,5].map(v=>`<section class="s"><h2>Level ${v} – ${LN[v]}</h2><div class="grid">${LS.filter(l=>l.lv===v).map(lessonCard).join('')}</div></section>`).join('')+`<p class="mut">More lessons (cubes, algebraic techniques, advanced mental arithmetic) are coming soon.</p>`)}
+function practicePage(){const ch=(k,arr,lab)=>`<h3>${lab}</h3><div class="row">${arr.map(a=>`<button class="chip" data-k="${k}" data-v="${a[0]}" aria-pressed="${P[k]==a[0]}">${a[1]}</button>`).join('')}</div>`;
+ E(`<h1>Practice</h1><div class="card">${ch('topic',Object.keys(TOPICS).map(t=>[t,t]),'Topic')}${ch('d',DN.map((n,i)=>[i+1,n[0].toUpperCase()+n.slice(1)]),'Difficulty')}${ch('n',[5,10,20,50].map(x=>[x,x]),'Questions')}${ch('t',[[0,'No Timer'],[30,'30 sec'],[60,'60 sec'],[120,'2 min'],[300,'5 min']],'Timer')}<p><button class="btn" id="sp">Start Practice</button></p></div>`);
+ document.querySelectorAll('.chip[data-k]').forEach(b=>b.onclick=()=>{const v=b.dataset.v;P[b.dataset.k]=b.dataset.k==='topic'?v:+v;practicePage()});
+ $('#sp').onclick=()=>{const go=()=>{R=Math.random;session({qs:genSet(TOPICS[P.topic],P.d,P.n),time:P.t,title:P.topic+' Practice',back:'#practice',onEnd:r=>{hdr();results(r,{again:go})}})};go()}}
+function challengesPage(){const dc=DAILY(),bd=n=>S.bestScore[n]||0;
+ E(`<h1>Challenges</h1><div class="card"><h2>🔥 Today's Challenge</h2><p>10 Questions · 60 Seconds · ${diff(3)} · Best Score: ${bd('daily'+today())}</p><button class="btn" id="d0">Start Challenge</button></div><section class="s"><div class="grid">${CH.map((c,i)=>`<div class="card"><b>${c.name}</b><p>${c.n} Questions<br>${c.time?c.time>=300?'5 Minutes':c.time+' Seconds':'No Time Limit'}</p>${diff(c.d)} <span class="pill">Best ${bd(c.id)}</span><p><button class="btn sm" data-c="${i}">Start</button></p></div>`).join('')}</div></section>`);
+ $('#d0').onclick=()=>startChallenge(dc);document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>startChallenge(CH[b.dataset.c]))}
+function progressPage(){const L=lvl(),nx=LV[L+1],cur=LV[L][0],pr=nx?(S.xp-cur)/(nx[0]-cur)*100:100,acc=S.solved?Math.round(S.correct/S.solved*100):0;
+ const st=(a,b)=>`<div class="card"><div class="mut">${a}</div><div class="num">${b}</div></div>`;
+ const AC=[['🏆','First Lesson',Object.keys(S.done).length>=1],['🔥','7 Day Streak',S.longest>=7],['⚡','Speed Demon',S.best!=null&&S.best<=3],['🎯','100 Correct Answers',S.correct>=100],['🧠','Mental Math Master',L>=5],['💯','Perfect Score',S.perfect],['🛡️','Survivor (200+ XP in Survival)',(S.bestScore.surv||0)>=200],['📚','Lesson Collector (all lessons)',Object.keys(S.done).length>=LS.length]];
+ const wk=[];const d0=new Date();const dow=(d0.getDay()+6)%7;for(let k=0;k<7;k++){const d=new Date();d.setDate(d0.getDate()-dow+k);const s=ymd(d);wk.push(`<div class="card" style="padding:10px;text-align:center"><small>${['MON','TUE','WED','THU','FRI','SAT','SUN'][k]}</small><div>${s===today()&&S.days.includes(s)?'🔥':S.days.includes(s)?'✓':'·'}</div></div>`)}
+ E(`<h1>Progress</h1><div class="card"><h2>Level ${L+1} – ${LV[L][1]}</h2><p>${S.xp.toLocaleString()} XP${nx?' · '+(nx[0]-S.xp)+' XP to next level':''}</p>${bar(pr)}<p><a class="btn" href="#lesson/${nextLesson().id}">Continue Learning</a></p></div>
+ <section class="s"><div class="grid">${st('Questions Solved',S.solved.toLocaleString())}${st('Correct Answers',S.correct.toLocaleString())}${st('Accuracy',acc+'%')}${st('Best Speed',S.best!=null?S.best+' sec':'—')}${st('Current Streak',S.streak+' days')}${st('Longest Streak',S.longest+' days')}</div></section>
+ <section class="s"><h2>🔥 This Week</h2><div class="grid" style="grid-template-columns:repeat(7,1fr);gap:6px">${wk.join('')}</div></section>
+ <section class="s"><h2>Skill Progress</h2><div class="card">${['addition','subtraction','multiplication','squares','division','percentages'].map(g=>{const k=S.skill[g]||{n:0,c:0},p=k.n?Math.round(k.c/k.n*100*Math.min(1,k.n/20)):0;return`<div class="row" style="justify-content:space-between;margin-bottom:0"><span>${g[0].toUpperCase()+g.slice(1)}</span><b>${p}%</b></div>${bar(p)}`}).join('')}</div></section>
+ <section class="s"><h2>Achievements</h2><div class="grid">${AC.map(a=>`<div class="card ${a[2]?'':'lock'}"><span class="num">${a[0]}</span> <b>${a[1]}</b></div>`).join('')}</div></section>
+ <section class="s"><h2>XP &amp; Levels</h2><div class="card mut">Complete lesson +50 · Correct answer +10 · Perfect lesson +100 · Daily challenge +75 · 7-day streak +200<br>${LV.map((l,i)=>`L${i+1} ${l[1]}`).join(' · ')}</div></section><button class="chip" id="rs">Reset progress</button>`);
+ $('#rs').onclick=()=>{if(confirm('Reset all progress?')){S=blank();save();hdr();progressPage()}}}
+function aboutPage(){E(`<div style="max-width:760px"><h1>About ${BRAND.name}</h1><h2>What is Vedic Mathematics?</h2><p>“Vedic Mathematics” is a collection of mental-calculation methods popularised by Bharati Krishna Tirthaji's 1965 book, which presents them as 16 sutras. Historians note these sutras are not found in the known Vedic texts, so these techniques are best seen as modern arithmetic methods, not ancient Vedic writings.</p><p>This is separate from genuine ancient and traditional Indian mathematics — such as the Sulba Sutras, the decimal place-value system and zero, and the work of Aryabhata, Brahmagupta and Bhaskara. The shortcuts here are useful and mathematically sound, and we explain <i>why</i> each one works.</p><h2>Why learn mental mathematics?</h2><p>Faster calculations · better number sense · improved confidence · less reliance on calculators · stronger mental arithmetic.</p><h2>Our Philosophy</h2><p><b>Understand the mathematics. Learn the shortcut. Practice repeatedly. Improve your speed.</b></p><a class="btn" href="#learn">Start Learning</a></div>`)}
+const stub=t=>()=>E(`<h1>${t}</h1><p class="mut">This is a placeholder page for the first version.</p><a class="btn" href="#home">Back to Home</a>`);
+function hdr(){if(lvl()>LASTL){toast('🎉 Level up! You are now '+LV[lvl()][1]);sfx.win()}LASTL=lvl();$('#xp').textContent='⭐ '+S.xp+' XP';$('#st').textContent='🔥 '+S.streak}
+function route(){if(ACTIVE){ACTIVE();ACTIVE=null}const h=location.hash.slice(1)||'home',[p,a]=h.split('/');R=Math.random;
+ document.querySelectorAll('.links a').forEach(x=>x.classList.toggle('on',x.getAttribute('href')==='#'+p));$('#links').classList.remove('open');$('#bg').setAttribute('aria-expanded','false');
+ ({home:homePage,learn:learnPage,lesson:()=>lessonPage(a),practice:practicePage,challenges:challengesPage,progress:progressPage,cheats:cheatPage,about:aboutPage,privacy:stub('Privacy'),terms:stub('Terms'),contact:stub('Contact')}[p]||homePage)();window.scrollTo(0,0)}
+$('#brand').textContent='∑ '+BRAND.name;$('#fname').textContent=BRAND.name;$('#fc').textContent=BRAND.name;$('#ftag').textContent=BRAND.tag;
+$('#bg').onclick=()=>{const o=$('#links').classList.toggle('open');$('#bg').setAttribute('aria-expanded',o)};
+addEventListener('hashchange',route);hdr();route();
+/* ---------- living background: twinkling stars, drifting math symbols, shooting stars ---------- */
+const root=document.documentElement,cv=document.createElement('canvas');cv.id='sky';cv.setAttribute('aria-hidden','true');document.body.prepend(cv);
+const cx=cv.getContext('2d'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches,SYM=['+','−','×','÷','=','%','√','π','∑','∞','7','3','9','12','25','100','11','5','²','½','42','99','8','64','√2','x²'];
+let W=0,H=0,stars=[],nums=[],shoot=null,nextShoot=200,fr=0;
+const isDark=()=>root.dataset.theme==='dark'||(root.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function sizeSky(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+ stars=Array.from({length:Math.min(170,Math.round(W*H/8000))},()=>({x:rnd(0,W),y:rnd(0,H),r:rnd(.4,1.9),p:rnd(0,6.28),s:rnd(.015,.05)}));
+ nums=Array.from({length:Math.min(28,Math.round(W/42))},()=>({x:rnd(0,W),y:rnd(0,H),t:SYM[Math.floor(Math.random()*SYM.length)],f:rnd(16,44),vy:-rnd(.12,.45),vx:rnd(-.15,.15),a:rnd(.07,.2),rot:rnd(-.5,.5),vr:rnd(-.002,.002)}));if(RM)drawSky()}
+function drawSky(){cx.clearRect(0,0,W,H);const dk=isDark(),sc=dk?'255,255,255':'109,40,217',nc=dk?'165,180,255':'79,70,229';fr++;
+ for(const n of nums){n.x+=n.vx;n.y+=n.vy;n.rot+=n.vr;if(n.y<-60){n.y=H+40;n.x=rnd(0,W);n.t=SYM[Math.floor(Math.random()*SYM.length)]}
+  cx.save();cx.translate(n.x,n.y);cx.rotate(n.rot);cx.font='700 '+n.f+'px ui-monospace,Menlo,monospace';cx.fillStyle='rgba('+nc+','+(dk?n.a:n.a*.8)+')';if(dk){cx.shadowColor='rgba(129,140,248,.6)';cx.shadowBlur=12}cx.fillText(n.t,0,0);cx.restore()}
+ for(const s of stars){s.p+=s.s;const tw=.25+.75*Math.abs(Math.sin(s.p)),a=(dk?1:.55)*tw;cx.fillStyle='rgba('+sc+','+a+')';cx.beginPath();cx.arc(s.x,s.y,s.r*(.7+.5*tw),0,6.283);cx.fill();
+  if(s.r>1.45){cx.strokeStyle='rgba('+sc+','+a*.7+')';cx.lineWidth=.8;const l=s.r*4*tw;cx.beginPath();cx.moveTo(s.x-l,s.y);cx.lineTo(s.x+l,s.y);cx.moveTo(s.x,s.y-l);cx.lineTo(s.x,s.y+l);cx.stroke()}}
+ if(dk&&!RM){if(!shoot&&--nextShoot<=0){shoot={x:rnd(W*.2,W),y:rnd(0,H*.4),vx:-rnd(7,11),vy:rnd(3,5),life:60};nextShoot=rnd(260,620)}
+  if(shoot){const g=cx.createLinearGradient(shoot.x,shoot.y,shoot.x-shoot.vx*7,shoot.y-shoot.vy*7);g.addColorStop(0,'rgba(255,255,255,'+shoot.life/60+')');g.addColorStop(1,'rgba(255,255,255,0)');cx.strokeStyle=g;cx.lineWidth=2;cx.beginPath();cx.moveTo(shoot.x,shoot.y);cx.lineTo(shoot.x-shoot.vx*7,shoot.y-shoot.vy*7);cx.stroke();shoot.x+=shoot.vx;shoot.y+=shoot.vy;if(--shoot.life<=0)shoot=null}}}
+function loop(){drawSky();requestAnimationFrame(loop)}
+try{const t=localStorage.getItem('vm_theme');if(t)root.dataset.theme=t}catch(e){}
+const thIcon=()=>{$('#th').textContent=isDark()?'☀️':'🌙'};
+$('#th').onclick=()=>{const n=isDark()?'light':'dark';root.dataset.theme=n;try{localStorage.setItem('vm_theme',n)}catch(e){}thIcon();if(RM)drawSky()};
+thIcon();addEventListener('resize',sizeSky);sizeSky();if(!RM)loop();
+const muI=()=>{$('#mu').textContent=MUTE?'🔇':'🔊'};$('#mu').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('vm_mute',MUTE?'1':'0')}catch(e){}muI();if(!MUTE)sfx.ok()};muI();
+
+</script></body></html>
